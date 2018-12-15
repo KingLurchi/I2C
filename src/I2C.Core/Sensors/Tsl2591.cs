@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using I2C.Core.Contracts;
+using I2C.Core.Enums;
+using I2C.Core.Extensions;
 
 namespace I2C.Core.Sensors
 {
     public interface ITsl2591 : II2CDevice
     {
-        Task<double> GetLux();
+        Task<double> GetLux(Gain gain = Gain.Low, IntergrationTime time = IntergrationTime.Shortest);
     }
 
     public sealed class Tsl2591 : BaseI2CDevice, ITsl2591
     {
-        protected override byte IdentificationNumber => 0x12;
-        protected override byte IdentificationRegister => 0x12;
+        protected override byte IdentificationNumber => 0x50;
+        protected override byte IdentificationRegister => Registers.Command | Registers.Id;
         protected override string Name => nameof(Tsl2591);
         protected override int SlaveAddress => 0x29;
         protected override Dictionary<string, string> Wires => new Dictionary<string, string>
@@ -24,57 +26,44 @@ namespace I2C.Core.Sensors
             {"SDA", "SDA"}
         };
 
-        public async Task<double> GetLux()
+        public async Task<double> GetLux(Gain gain = Gain.Low, IntergrationTime time = IntergrationTime.Shortest)
         {
             await ConnectAndInitialize();
 
-            await Task.Delay(5000);
+            Configure(gain, time);
 
-            var channel0 = ReadRegister(Registers.C0DataL | Registers.Command, x => (ushort) ((x[1] << 8) | x[0]), 2);
-            var channel1 = ReadRegister(Registers.C1DataL | Registers.Command, x => (ushort) ((x[1] << 8) | x[0]), 2);
+            Enable();
 
-            if (channel0 == 0xFFFF || channel1 == 0xFFFF)
+            await Task.Delay((int)time);
+
+            var y = ReadRegister(Registers.Command | Registers.C0DataL, x => (ushort)((x[1] << 8) | x[0]), 2) | 0;
+            var luminosity = (ReadRegister(Registers.Command | Registers.C1DataL, x => (ushort)((x[1] << 8) | x[0]), 2) << 16) | y;
+
+            Disable();
+
+            var full = luminosity & 0xFFFF;
+            var ir = luminosity >> 16;
+
+            if (full == 0xFFFF | ir == 0xFFFF)
                 return 0.0;
 
-            var gain = GetGain(0x10);
-            var time = (0x01 + 1) * 100;
-
-            var cpl = gain * time / 408.0;
-            var lux1 = (channel0 - 1.64 * channel1) / cpl;
-            var lux2 = (0.59 * channel0 - 0.86 * channel1) / cpl;
-
-            return Math.Round(Math.Max(lux1, lux2), 4);
+            var cpl = (float)gain * (float)time / 408.0F;
+            return (full - ir) * (1.0f - ir/full) / cpl;
         }
 
-        private double GetGain(uint gain)
+        private void Disable()
         {
-            switch (gain)
-            {
-                case 0x10:
-                    return 25;
-                case 0x20:
-                    return 428;
-                case 0x30:
-                    return 9876;
-                default:
-                    return 1;
-            }
+            WriteRegister(Registers.Command | Registers.Enable, 0x00);
         }
 
-        protected override void Setup()
+        private void Enable()
         {
-            TurnOn();
-            SetGain();
+            WriteRegister(Registers.Command | Registers.Enable, 0x01 | 0x02 | 0x10 | 0x80);
         }
 
-        private void TurnOn()
+        private void Configure(Gain gain, IntergrationTime time)
         {
-            WriteRegister(Registers.Enable | Registers.Command, 0x03);
-        }
-
-        private void SetGain()
-        {
-            WriteRegister(Registers.Config, 0x10 + 0x01);
+            WriteRegister(Registers.Command | Registers.Control, (byte)(gain.ToByte() | time.ToByte()));
         }
 
         private static class Registers
@@ -82,8 +71,9 @@ namespace I2C.Core.Sensors
             public const byte C0DataL= 0x14;
             public const byte C1DataL= 0x16;
             public const byte Command = 0xA0;
-            public const byte Config = 0x01;
+            public const byte Control = 0x01;
             public const byte Enable = 0x00;
+            public const byte Id = 0x12;
         }
     }
 }

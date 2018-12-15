@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using I2C.Core.Enums;
 using I2C.Core.Sensors;
 
 namespace I2C.Surface
@@ -23,7 +24,7 @@ namespace I2C.Surface
             var pressure = await _bmp280.GetPressure();
             var temperature = await _bmp280.GetTemperature();
 
-            var lux = await _tsl2591.GetLux();
+            var lux = await _tsl2591.GetLux(Gain.High, IntergrationTime.Long);
         }
     }
 }

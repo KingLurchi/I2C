@@ -17,7 +17,7 @@ namespace I2C.Core.Sensors
         private CompensationData _compensationData;
 
         protected override byte IdentificationNumber => 0x58;
-        protected override byte IdentificationRegister => 0xD0;
+        protected override byte IdentificationRegister => Registers.Id;
         protected override string Name => nameof(Bmp280);
         protected override int SlaveAddress => 0x77;
         protected override Dictionary<string, string> Wires => new Dictionary<string, string>
@@ -140,6 +140,7 @@ namespace I2C.Core.Sensors
             public const byte DigP8 = 0x9C;
             public const byte DigP9 = 0x9E;
             public const byte HumidityControl = 0xF2;
+            public const byte Id = 0xD0;
             public const byte PressureMsb = 0xF7;
             public const byte PressureLsb = 0xF8;
             public const byte PressureXlsb = 0xF9;
