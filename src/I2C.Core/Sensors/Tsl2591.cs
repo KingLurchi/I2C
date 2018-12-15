@@ -12,7 +12,7 @@ namespace I2C.Core.Sensors
 
     public sealed class Tsl2591 : BaseI2CDevice, ITsl2591
     {
-        protected override byte IdentificationNumber => 0x00;
+        protected override byte IdentificationNumber => 0x12;
         protected override byte IdentificationRegister => 0x12;
         protected override string Name => nameof(Tsl2591);
         protected override int SlaveAddress => 0x29;

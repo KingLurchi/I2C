@@ -32,8 +32,8 @@ namespace I2C.Core.Sensors
         {
             await ConnectAndInitialize();
 
-            var pressure = await GetPressure() / 100;
-            return 44330.0f / (1.0f - (float)Math.Pow(pressure / seaLevel, 0.1903f));
+            var pressure = (float) await GetPressure() / 100;
+            return 44330.0f * (1.0f - (float)Math.Pow(pressure / seaLevel, 0.1903f));
         }
 
         public async Task<double> GetPressure()
@@ -49,9 +49,9 @@ namespace I2C.Core.Sensors
             var a = (long) GetFineTemperature() - 128000;
             var b = a * a * _compensationData.DigP6;
             b = b + ((a * _compensationData.DigP5) << 17);
-            b = b + (_compensationData.DigP4 << 35);
+            b = b + ((long)_compensationData.DigP4 << 35);
             a = ((a * a * _compensationData.DigP3) >> 8) + ((a * _compensationData.DigP2) << 12);
-            a = (((1 << 47) + a) * _compensationData.DigP1) >> 33;
+            a = ((((long)1 << 47) + a) * _compensationData.DigP1) >> 33;
 
             if (a == 0)
                 return 0;
@@ -62,7 +62,9 @@ namespace I2C.Core.Sensors
             a = (_compensationData.DigP9 * (pressure >> 13) * (pressure >> 13)) >> 25;
             b = (_compensationData.DigP8 * pressure) >> 19;
 
-            return ((pressure + a + b) >> 8) + (_compensationData.DigP7 << 4);
+            pressure = ((pressure + a + b) >> 8) + ((long)_compensationData.DigP7 << 4);
+
+            return pressure / 256.0;
         }
 
         public async Task<double> GetTemperature()
@@ -97,18 +99,18 @@ namespace I2C.Core.Sensors
         {
             return new CompensationData
             {
-                DigT1 = ReadRegister(Registers.DigT1, x => (ushort)(x[1] << 8 + x[0]), 2),
-                DigT2 = ReadRegister(Registers.DigT2, x => (short)(x[1] << 8 + x[0]), 2),
-                DigT3 = ReadRegister(Registers.DigT3, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP1 = ReadRegister(Registers.DigP1, x => (ushort)(x[1] << 8 + x[0]), 2),
-                DigP2 = ReadRegister(Registers.DigP2, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP3 = ReadRegister(Registers.DigP3, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP4 = ReadRegister(Registers.DigP4, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP5 = ReadRegister(Registers.DigP5, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP6 = ReadRegister(Registers.DigP6, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP7 = ReadRegister(Registers.DigP7, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP8 = ReadRegister(Registers.DigP8, x => (short)(x[1] << 8 + x[0]), 2),
-                DigP9 = ReadRegister(Registers.DigP9, x => (short)(x[1] << 8 + x[0]), 2)
+                DigT1 = ReadRegister(Registers.DigT1, x => (ushort)((x[1] << 8) + x[0]), 2),
+                DigT2 = ReadRegister(Registers.DigT2, x => (short)((x[1] << 8) + x[0]), 2),
+                DigT3 = ReadRegister(Registers.DigT3, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP1 = ReadRegister(Registers.DigP1, x => (ushort)((x[1] << 8) + x[0]), 2),
+                DigP2 = ReadRegister(Registers.DigP2, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP3 = ReadRegister(Registers.DigP3, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP4 = ReadRegister(Registers.DigP4, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP5 = ReadRegister(Registers.DigP5, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP6 = ReadRegister(Registers.DigP6, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP7 = ReadRegister(Registers.DigP7, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP8 = ReadRegister(Registers.DigP8, x => (short)((x[1] << 8) + x[0]), 2),
+                DigP9 = ReadRegister(Registers.DigP9, x => (short)((x[1] << 8) + x[0]), 2)
             };
         }
 
