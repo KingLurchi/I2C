@@ -7,8 +7,93 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    <Grid>
-
+    <Grid Background="#1e1e1e"
+          ColumnSpacing="20"
+          Padding="20"
+          RowSpacing="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Rectangle
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="0" 
+            Fill="#2d2d30"/>
+        <TextBlock
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Grid.Row="0"
+            Foreground="White"
+            Text="Bmp280"/>
+        <TextBlock
+            Grid.Column="1"
+            Grid.Row="1"
+            Foreground="White"
+            Text="Altitude"
+            VerticalAlignment="Center" />
+        <TextBlock
+            x:Name="Altitude"
+            Grid.Column="2"
+            Grid.Row="1"
+            Foreground="White"
+            VerticalAlignment="Center" />
+        <TextBlock
+            Grid.Column="1"
+            Grid.Row="2"
+            Foreground="White"
+            Text="Pressure"
+            VerticalAlignment="Center" />
+        <TextBlock
+            x:Name="Pressure"
+            Grid.Column="2"
+            Grid.Row="2"
+            Foreground="White"
+            VerticalAlignment="Center" /> 
+        <TextBlock
+            Grid.Column="1"
+            Grid.Row="3"
+            Foreground="White"
+            Text="Temperature"
+            VerticalAlignment="Center" />
+        <TextBlock
+            x:Name="Temperature"
+            Grid.Column="2"
+            Grid.Row="3"
+            Foreground="White"
+            VerticalAlignment="Center" />
+        <Rectangle
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="4" 
+            Fill="#2d2d30"/>
+        <TextBlock
+            Grid.Column="0"
+            Grid.Row="4"
+            Foreground="White"
+            Text="Tsl2591"
+            VerticalAlignment="Center" />
+        <TextBlock
+            Grid.Column="1"
+            Grid.Row="5"
+            Foreground="White"
+            Text="Lux"
+            VerticalAlignment="Center" />
+        <TextBlock
+            x:Name="Lux"
+            Grid.Column="2"
+            Grid.Row="5"
+            Foreground="White"
+            VerticalAlignment="Center" />
     </Grid>
 </Page>

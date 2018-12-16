@@ -1,6 +1,6 @@
 ﻿namespace I2C.Core.Enums
 {
-    public enum IntergrationTime
+    public enum IntegrationTime
     {
         Shortest = 100,
         Shorter = 200,

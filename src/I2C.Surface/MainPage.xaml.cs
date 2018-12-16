@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System.Globalization;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using I2C.Core.Enums;
 using I2C.Core.Sensors;
@@ -20,11 +22,20 @@ namespace I2C.Surface
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            var altitude = await _bmp280.GetAltitude(1026.3f);
-            var pressure = await _bmp280.GetPressure();
-            var temperature = await _bmp280.GetTemperature();
+            while (true)
+            {
+                var altitude = await _bmp280.GetAltitude(1026.3f);
+                Altitude.Text = altitude.ToString(CultureInfo.CurrentCulture);
+                var pressure = await _bmp280.GetPressure();
+                Pressure.Text = pressure.ToString(CultureInfo.CurrentCulture);
+                var temperature = await _bmp280.GetTemperature();
+                Temperature.Text = temperature.ToString(CultureInfo.CurrentCulture);
 
-            var lux = await _tsl2591.GetLux(Gain.High, IntergrationTime.Long);
+                var lux = await _tsl2591.GetLux(Gain.High, IntegrationTime.Long);
+                Lux.Text = lux.ToString(CultureInfo.CurrentCulture);
+
+                await Task.Delay(1000);
+            }
         }
     }
 }

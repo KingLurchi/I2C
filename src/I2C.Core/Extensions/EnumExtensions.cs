@@ -21,21 +21,21 @@ namespace I2C.Core.Extensions
             }
         }
 
-        public static byte ToByte(this IntergrationTime time)
+        public static byte ToByte(this IntegrationTime time)
         {
             switch (time)
             {
-                case IntergrationTime.Shortest:
+                case IntegrationTime.Shortest:
                     return 0x00;
-                case IntergrationTime.Shorter:
+                case IntegrationTime.Shorter:
                     return 0x01;
-                case IntergrationTime.Medium:
+                case IntegrationTime.Medium:
                     return 0x02;
-                case IntergrationTime.Long:
+                case IntegrationTime.Long:
                     return 0x03;
-                case IntergrationTime.Longer:
+                case IntegrationTime.Longer:
                     return 0x04;
-                case IntergrationTime.Longest:
+                case IntegrationTime.Longest:
                     return 0x05;
                 default:
                     return 0x00;
