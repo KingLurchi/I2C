@@ -29,6 +29,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Rectangle
             Grid.Column="0"
@@ -144,18 +146,40 @@
             Grid.Column="0"
             Grid.Row="9"
             Foreground="White"
-            Text="Tsl2591"
+            Text="Tcs34725"
             VerticalAlignment="Center" />
         <TextBlock
             Grid.Column="1"
             Grid.Row="10"
+            Foreground="White"
+            Text="Color"
+            VerticalAlignment="Center" />
+        <TextBlock
+            x:Name="Color"
+            Grid.Column="2"
+            Grid.Row="10"
+            VerticalAlignment="Center" />
+        <Rectangle
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="11" 
+            Fill="#2d2d30"/>
+        <TextBlock
+            Grid.Column="0"
+            Grid.Row="11"
+            Foreground="White"
+            Text="Tsl2591"
+            VerticalAlignment="Center" />
+        <TextBlock
+            Grid.Column="1"
+            Grid.Row="12"
             Foreground="White"
             Text="Lux"
             VerticalAlignment="Center" />
         <TextBlock
             x:Name="Lux"
             Grid.Column="2"
-            Grid.Row="10"
+            Grid.Row="12"
             Foreground="White"
             VerticalAlignment="Center" />
     </Grid>

@@ -18,8 +18,8 @@ namespace I2C.Core.Sensors
         protected override Dictionary<string, string> Wires => new Dictionary<string, string>
         {
             {"3V3", "VIN"},
-            {"GND", "GND"},
-            {"SCL", "SCK"},
+            {"GND", "G"},
+            {"SCL", "SCL"},
             {"SDA", "SDA"}
         };
 

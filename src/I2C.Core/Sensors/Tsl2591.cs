@@ -9,6 +9,7 @@ namespace I2C.Core.Sensors
 {
     public interface ITsl2591 : II2CDevice
     {
+        Task Configure(Tsl2591.Gain gain, Tsl2591.IntegrationTime time);
         Task<double> GetLux(Gain gain = Gain.Low, IntegrationTime time = IntegrationTime.Shortest);
     }
 
@@ -26,11 +27,17 @@ namespace I2C.Core.Sensors
             {"SDA", "SDA"}
         };
 
+        public async Task Configure(Gain gain, IntegrationTime time)
+        {
+            await ConnectAndInitialize();
+            WriteRegister(Registers.Command | Registers.Control, (byte)(gain.ToByte() | time.ToByte()));
+        }
+
         public async Task<double> GetLux(Gain gain = Gain.Low, IntegrationTime time = IntegrationTime.Shortest)
         {
             await ConnectAndInitialize();
 
-            Configure(gain, time);
+            await Configure(gain, time);
 
             Enable();
 
@@ -59,11 +66,6 @@ namespace I2C.Core.Sensors
         private void Enable()
         {
             WriteRegister(Registers.Command | Registers.Enable, 0x01 | 0x02 | 0x10 | 0x80);
-        }
-
-        private void Configure(Gain gain, IntegrationTime time)
-        {
-            WriteRegister(Registers.Command | Registers.Control, (byte)(gain.ToByte() | time.ToByte()));
         }
 
         private static class Registers
