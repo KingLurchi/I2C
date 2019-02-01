@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using I2C.Core.Contracts;
-using I2C.Core.Enums;
 using I2C.Core.Extensions;
+using Gain = I2C.Core.Sensors.Tsl2591.Gain;
+using IntegrationTime = I2C.Core.Sensors.Tsl2591.IntegrationTime;
 
 namespace I2C.Core.Sensors
 {
@@ -15,7 +15,7 @@ namespace I2C.Core.Sensors
     public sealed class Tsl2591 : BaseI2CDevice, ITsl2591
     {
         protected override byte IdentificationNumber => 0x50;
-        protected override byte IdentificationRegister => Registers.Command | Registers.Id;
+        protected override byte? IdentificationRegister => Registers.Command | Registers.Id;
         protected override string Name => nameof(Tsl2591);
         protected override int SlaveAddress => 0x29;
         protected override Dictionary<string, string> Wires => new Dictionary<string, string>
@@ -74,6 +74,24 @@ namespace I2C.Core.Sensors
             public const byte Control = 0x01;
             public const byte Enable = 0x00;
             public const byte Id = 0x12;
+        }
+
+        public enum Gain
+        {
+            Low = 1,
+            Medium = 25,
+            High = 428,
+            Maximum = 9876
+        }
+
+        public enum IntegrationTime
+        {
+            Shortest = 100,
+            Shorter = 200,
+            Medium = 300,
+            Long = 400,
+            Longer = 500,
+            Longest = 600
         }
     }
 }

@@ -10,14 +10,14 @@ namespace I2C.Core.Contracts
 {
     public abstract class BaseI2CDevice
     {
-        protected abstract byte IdentificationNumber { get; }
-        protected abstract byte IdentificationRegister { get; }
+        protected virtual byte IdentificationNumber { get; } = 0;
+        protected virtual byte? IdentificationRegister { get; } = null;
+
         protected abstract string Name { get; }
         protected abstract int SlaveAddress { get; }
         protected abstract Dictionary<string, string> Wires { get; }
 
-        protected I2cDevice Device { get; private set; }
-
+        private I2cDevice Device { get; set; }
         private bool IsConnected { get; set; }
         private bool IsInitialized { get; set; }
 
@@ -66,12 +66,14 @@ namespace I2C.Core.Contracts
             if (IsInitialized)
                 return;
 
-            var identificationNumber = ReadRegister(IdentificationRegister, x => x[0]);
-            if (identificationNumber != IdentificationNumber)
-                throw new IdMismatchException(Name, IdentificationNumber, identificationNumber);
+            if (IdentificationRegister.HasValue)
+            {
+                var identificationNumber = ReadRegister(IdentificationRegister.Value, x => x[0]);
+                if (identificationNumber != IdentificationNumber)
+                    throw new IdMismatchException(Name, IdentificationNumber, identificationNumber);
+            }
 
-            Setup();
-            await SetupAsync();
+            await Setup();
 
             IsInitialized = true;
         }
@@ -94,17 +96,9 @@ namespace I2C.Core.Contracts
         }
 
         /// <summary>
-        ///     Override this method if additional work has to be done in order to properly initialize the device. 
+        ///     Override this method if additional work has to be done in order to properly initialize the device.
         /// </summary>
-        protected virtual void Setup()
-        {
-
-        }
-
-        /// <summary>
-        ///     Override this method if additional asynchronous work has to be done in order to properly initialize the device.
-        /// </summary>
-        protected virtual Task SetupAsync()
+        protected virtual Task Setup()
         {
             return Task.CompletedTask;
         }

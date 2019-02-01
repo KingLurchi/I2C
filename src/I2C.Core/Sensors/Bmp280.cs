@@ -17,9 +17,9 @@ namespace I2C.Core.Sensors
         private CompensationData _compensationData;
 
         protected override byte IdentificationNumber => 0x58;
-        protected override byte IdentificationRegister => Registers.Id;
+        protected override byte? IdentificationRegister => Registers.Id;
         protected override string Name => nameof(Bmp280);
-        protected override int SlaveAddress => 0x77;
+        protected override int SlaveAddress => 0x77; //0x76
         protected override Dictionary<string, string> Wires => new Dictionary<string, string>
         {
             {"3V3", "VIN"},
@@ -88,11 +88,13 @@ namespace I2C.Core.Sensors
             return a + b;
         }
 
-        protected override void Setup()
+        protected override async Task Setup()
         {
             _compensationData = GetCompensationData();
             SetControlRegister();
             SetHumidityControlRegister();
+
+            await base.Setup();
         }
 
         private CompensationData GetCompensationData()

@@ -128,9 +128,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sensors\Bmp280.cs" />
     <Compile Include="Contracts\II2CDevice.cs" />
-    <Compile Include="Enums\Gain.cs" />
-    <Compile Include="Enums\IntegrationTime.cs" />
+    <Compile Include="Sensors\Si7021.cs" />
+    <Compile Include="Sensors\Tcs34725.cs" />
     <Compile Include="Sensors\Tsl2591.cs" />
+    <Compile Include="Sensors\Veml6070.cs" />
     <EmbeddedResource Include="Properties\I2C.Core.rd.xml" />
   </ItemGroup>
   <ItemGroup>
