@@ -14,12 +14,22 @@ namespace I2C.Core.Contracts
         protected virtual byte? IdentificationRegister { get; } = null;
 
         protected abstract string Name { get; }
-        protected abstract int SlaveAddress { get; }
         protected abstract Dictionary<string, string> Wires { get; }
+
+        private I2cConnectionSettings ConnectionSettings { get; }
 
         private I2cDevice Device { get; set; }
         private bool IsConnected { get; set; }
         private bool IsInitialized { get; set; }
+
+        protected BaseI2CDevice(I2cBusSpeed busSpeed, I2cSharingMode sharingMode, int slaveAddress)
+        {
+            ConnectionSettings = new I2cConnectionSettings(slaveAddress)
+            {
+                BusSpeed = busSpeed,
+                SharingMode = sharingMode
+            };
+        }
 
         /// <summary>
         ///     Tries to establish a connection to the device and initializes it. Call this method first in every public
@@ -42,13 +52,7 @@ namespace I2C.Core.Contracts
                 if (devices.Count == 0)
                     throw new DeviceNotFoundException(Name);
 
-                var connectionSettings = new I2cConnectionSettings(SlaveAddress)
-                {
-                    BusSpeed = I2cBusSpeed.FastMode,
-                    SharingMode = I2cSharingMode.Shared
-                };
-
-                Device = await I2cDevice.FromIdAsync(devices[0].Id, connectionSettings);
+                Device = await I2cDevice.FromIdAsync(devices[0].Id, ConnectionSettings);
                 if (Device == null)
                     throw new DeviceNotFoundException(Name);
 

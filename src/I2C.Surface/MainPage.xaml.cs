@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using I2C.Core.Sensors;
 
 namespace I2C.Surface
 {
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage
     {
         private readonly IBmp280 _bmp280;
         private readonly ISi7021 _si7021;
