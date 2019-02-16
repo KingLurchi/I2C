@@ -129,6 +129,7 @@
     <Compile Include="Sensors\Bmp280.cs" />
     <Compile Include="Contracts\II2CDevice.cs" />
     <Compile Include="Sensors\Si7021.cs" />
+    <Compile Include="Sensors\Ssd1306.cs" />
     <Compile Include="Sensors\Tcs34725.cs" />
     <Compile Include="Sensors\Tsl2591.cs" />
     <Compile Include="Sensors\Veml6070.cs" />
